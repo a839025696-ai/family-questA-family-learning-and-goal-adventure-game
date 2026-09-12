@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Family Quest</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">🏕️</div>
+        <div>
+          <h1>Family Quest</h1>
+          <p>家庭成长冒险</p>
+        </div>
+      </div>
+
+      <nav class="nav-list">
+        <button class="nav-item active" data-view="home">🏠 冒险主页</button>
+        <button class="nav-item" data-view="roadmap">🗺️ 目标路线</button>
+        <button class="nav-item" data-view="tasks">✅ 每日任务</button>
+        <button class="nav-item" data-view="mom">👩 妈妈后台</button>
+      </nav>
+
+      <div class="sidebar-note">
+        <strong>今日提示</strong>
+        <p>完成任务可以获得经验值和金币。连续完成会有额外奖励！</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">FAMILY LEARNING ADVENTURE</p>
+          <h2 id="pageTitle">今天继续升级吧！</h2>
+        </div>
+        <div class="character-switcher" id="characterSwitcher"></div>
+      </header>
+
+      <section id="homeView" class="view active"></section>
+      <section id="roadmapView" class="view"></section>
+      <section id="tasksView" class="view"></section>
+      <section id="momView" class="view"></section>
+    </main>
+  </div>
+
+  <template id="statCardTemplate">
+    <div class="stat-card">
+      <div class="stat-icon"></div>
+      <div>
+        <p class="stat-label"></p>
+        <strong class="stat-value"></strong>
+      </div>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
