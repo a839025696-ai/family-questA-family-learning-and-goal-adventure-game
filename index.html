@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
@@ -11,47 +11,48 @@
     .stage{position:relative;width:min(100vw,calc(100vh * 1.5));height:min(100vh,calc(100vw / 1.5));aspect-ratio:3/2;overflow:hidden;background:#06163c;box-shadow:0 0 80px rgba(0,160,255,.24)}
     .concept{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;user-select:none;-webkit-user-drag:none}
     .fallback{position:absolute;inset:0;display:grid;place-items:center;padding:8vw;text-align:center;background:radial-gradient(circle at 50% 25%,rgba(78,94,255,.7),transparent 32%),linear-gradient(150deg,#03102c,#0a2c6f 55%,#120a41)}
-    .fallback h1{font-size:clamp(36px,7vw,100px);margin:0 0 12px;text-shadow:0 0 24px #00cfff}.fallback p{font-size:clamp(16px,2vw,28px);opacity:.85}.concept.loaded+.fallback{display:none}
+    .fallback h1{font-size:clamp(36px,7vw,100px);margin:0 0 12px;text-shadow:0 0 24px #00cfff}.fallback p{font-size:clamp(16px,2vw,28px);opacity:.85}.fallback .zh{font-size:.72em;opacity:.45}.concept.loaded+.fallback{display:none}
     .hotspot{position:absolute;border:0;background:transparent;cursor:pointer;border-radius:20px;outline:none}.hotspot:focus-visible,.hotspot:hover{box-shadow:inset 0 0 0 2px rgba(75,220,255,.8),0 0 24px rgba(0,190,255,.35);background:rgba(0,180,255,.05)}
     .home{left:1%;top:10%;width:12%;height:6%}.mylife{left:1%;top:17%;width:12%;height:5%}.tasks{left:1%;top:23%;width:12%;height:5%}.goals{left:1%;top:29%;width:12%;height:5%}.skills{left:1%;top:35%;width:12%;height:5%}.assets{left:1%;top:41%;width:12%;height:5%}.shop{left:1%;top:47%;width:12%;height:5%}.family{left:1%;top:53%;width:12%;height:5%}
     .rina{left:35%;top:1%;width:8%;height:7%}.roy{left:44%;top:1%;width:8%;height:7%}.alex{left:53%;top:1%;width:8%;height:7%}.leo{left:62%;top:1%;width:8%;height:7%}
     .start{left:55%;top:54%;width:12%;height:10%}.goalcard{left:14.5%;top:72%;width:18%;height:22%}.assetcard{left:33%;top:72%;width:22%;height:22%}.shopcard{left:56%;top:72%;width:19%;height:22%}.familycard{left:76%;top:72%;width:22%;height:22%}
-    .toast{position:absolute;left:50%;bottom:4%;transform:translate(-50%,30px);padding:12px 20px;border:1px solid rgba(71,222,255,.75);border-radius:14px;background:rgba(3,16,48,.88);backdrop-filter:blur(12px);box-shadow:0 0 26px rgba(0,195,255,.35);font-weight:700;opacity:0;pointer-events:none;transition:.22s}.toast.show{opacity:1;transform:translate(-50%,0)}
-    .rotate{display:none;position:fixed;inset:0;z-index:20;background:#020b20;color:white;align-items:center;justify-content:center;text-align:center;padding:32px}.rotate strong{display:block;font-size:24px;margin-bottom:10px}.rotate span{opacity:.75}
+    .toast{position:absolute;left:50%;bottom:4%;transform:translate(-50%,30px);padding:12px 20px;border:1px solid rgba(71,222,255,.75);border-radius:14px;background:rgba(3,16,48,.88);backdrop-filter:blur(12px);box-shadow:0 0 26px rgba(0,195,255,.35);font-weight:700;opacity:0;pointer-events:none;transition:.22s;text-align:center}.toast .zh{display:block;font-size:11px;font-weight:500;opacity:.52;margin-top:2px}.toast.show{opacity:1;transform:translate(-50%,0)}
+    .rotate{display:none;position:fixed;inset:0;z-index:20;background:#020b20;color:white;align-items:center;justify-content:center;text-align:center;padding:32px}.rotate strong{display:block;font-size:24px;margin-bottom:7px}.rotate .zh{display:block;font-size:12px;opacity:.48}.rotate span{opacity:.75}
     @media (orientation:portrait) and (max-width:700px){.rotate{display:flex}.stage{opacity:.15}}
   </style>
 </head>
 <body>
   <div class="app">
     <div class="stage" id="stage">
-      <img class="concept" id="concept" src="assets/lifeverse-dashboard.png" alt="LifeVerse 游戏首页" onload="this.classList.add('loaded')" />
-      <div class="fallback"><div><h1>∞ LifeVerse</h1><p>A Better Me. A Brighter Tomorrow.</p><p>视觉资源加载中</p></div></div>
+      <img class="concept" id="concept" src="lifeverse-dashboard.png" alt="LifeVerse game dashboard" onload="this.classList.add('loaded')" />
+      <div class="fallback"><div><h1>∞ LifeVerse</h1><p>A Better Me. A Brighter Tomorrow.</p><p>Loading your world…<br><span class="zh">正在加载你的世界</span></p></div></div>
 
-      <button class="hotspot home" aria-label="首页" data-name="首页 Home"></button>
-      <button class="hotspot mylife" aria-label="我的人生" data-name="我的人生 My Life"></button>
-      <button class="hotspot tasks" aria-label="任务" data-name="任务 Tasks"></button>
-      <button class="hotspot goals" aria-label="目标" data-name="目标 Goals"></button>
-      <button class="hotspot skills" aria-label="技能" data-name="技能 Skills"></button>
-      <button class="hotspot assets" aria-label="成长资产" data-name="成长资产 Assets"></button>
-      <button class="hotspot shop" aria-label="奖励商店" data-name="奖励商店 Reward Shop"></button>
-      <button class="hotspot family" aria-label="家庭" data-name="家庭 Family"></button>
-      <button class="hotspot rina" aria-label="Rina" data-name="Rina"></button>
-      <button class="hotspot roy" aria-label="Roy" data-name="Roy"></button>
-      <button class="hotspot alex" aria-label="Alex" data-name="Alex"></button>
-      <button class="hotspot leo" aria-label="Leo" data-name="Leo"></button>
-      <button class="hotspot start" aria-label="开始任务" data-name="开始任务 Start Quest"></button>
-      <button class="hotspot goalcard" aria-label="我的目标" data-name="我的目标 My Goals"></button>
-      <button class="hotspot assetcard" aria-label="成长资产" data-name="成长资产 Growth Assets"></button>
-      <button class="hotspot shopcard" aria-label="奖励商店" data-name="奖励商店 Reward Shop"></button>
-      <button class="hotspot familycard" aria-label="家庭" data-name="家庭 Family"></button>
+      <button class="hotspot home" aria-label="Home" data-en="Home" data-zh="首页"></button>
+      <button class="hotspot mylife" aria-label="My Life" data-en="My Life" data-zh="我的人生"></button>
+      <button class="hotspot tasks" aria-label="Tasks" data-en="Tasks" data-zh="任务"></button>
+      <button class="hotspot goals" aria-label="Goals" data-en="Goals" data-zh="目标"></button>
+      <button class="hotspot skills" aria-label="Skills" data-en="Skills" data-zh="技能"></button>
+      <button class="hotspot assets" aria-label="Growth Assets" data-en="Growth Assets" data-zh="成长资产"></button>
+      <button class="hotspot shop" aria-label="Reward Shop" data-en="Reward Shop" data-zh="奖励商店"></button>
+      <button class="hotspot family" aria-label="Family" data-en="Family" data-zh="家庭"></button>
+      <button class="hotspot rina" aria-label="Rina" data-en="Rina" data-zh=""></button>
+      <button class="hotspot roy" aria-label="Roy" data-en="Roy" data-zh=""></button>
+      <button class="hotspot alex" aria-label="Alex" data-en="Alex" data-zh=""></button>
+      <button class="hotspot leo" aria-label="Leo" data-en="Leo" data-zh=""></button>
+      <button class="hotspot start" aria-label="Start Quest" data-en="Start Quest" data-zh="开始任务"></button>
+      <button class="hotspot goalcard" aria-label="My Goals" data-en="My Goals" data-zh="我的目标"></button>
+      <button class="hotspot assetcard" aria-label="Growth Assets" data-en="Growth Assets" data-zh="成长资产"></button>
+      <button class="hotspot shopcard" aria-label="Reward Shop" data-en="Reward Shop" data-zh="奖励商店"></button>
+      <button class="hotspot familycard" aria-label="Family" data-en="Family" data-zh="家庭"></button>
       <div class="toast" id="toast"></div>
     </div>
   </div>
-  <div class="rotate"><div><strong>请横屏打开 Family Quest</strong><span>横屏会完整显示游戏首页。</span></div></div>
+  <div class="rotate"><div><strong>Rotate to landscape</strong><span class="zh">请横屏打开 Family Quest</span></div></div>
   <script>
     const toast=document.getElementById('toast');
     document.querySelectorAll('.hotspot').forEach(btn=>btn.addEventListener('click',()=>{
-      toast.textContent=btn.dataset.name+' · 下一步接入真实功能';
+      const zh=btn.dataset.zh?`<span class="zh">${btn.dataset.zh}</span>`:'';
+      toast.innerHTML=`${btn.dataset.en}${zh}`;
       toast.classList.add('show');
       clearTimeout(window.__t);window.__t=setTimeout(()=>toast.classList.remove('show'),1400);
     }));
