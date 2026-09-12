@@ -29,10 +29,25 @@ jobs:
         with:
           enablement: true
 
+      - name: Build static site
+        shell: bash
+        run: |
+          mkdir -p _site
+          rsync -a --exclude '.git' --exclude '_site' ./ _site/
+          python - <<'PY'
+          from pathlib import Path
+          page = Path('_site/index.html')
+          html = page.read_text(encoding='utf-8')
+          tag = '<script src="persistence.js"></script>'
+          if tag not in html:
+              html = html.replace('</body>', f'{tag}\n</body>')
+          page.write_text(html, encoding='utf-8')
+          PY
+
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
