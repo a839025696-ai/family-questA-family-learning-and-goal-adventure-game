@@ -6,7 +6,7 @@
   const LOCAL_KEY = 'lifeverseLightV1';
   let applyingRemote = false;
   let saveTimer = null;
-  let lastPayload = '';
+  let lastPayload = localStorage.getItem(LOCAL_KEY) || '';
 
   function headers(extra) {
     return Object.assign({ apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' }, extra || {});
@@ -17,12 +17,16 @@
   function applyRemote(payload) {
     if (!payload || typeof payload !== 'object') return;
     const text = JSON.stringify(payload);
-    if (text === lastPayload) return;
+    const current = localStorage.getItem(LOCAL_KEY) || '';
+    if (text === current || text === lastPayload) {
+      lastPayload = text;
+      return;
+    }
     applyingRemote = true;
     lastPayload = text;
     localStorage.setItem(LOCAL_KEY, text);
     window.dispatchEvent(new CustomEvent('lifeverse-cloud-update', { detail: payload }));
-    setTimeout(() => { applyingRemote = false; location.reload(); }, 60);
+    setTimeout(() => { applyingRemote = false; location.reload(); }, 80);
   }
   async function pull() {
     try {
@@ -49,7 +53,6 @@
   }
   function queuePush() { clearTimeout(saveTimer); saveTimer = setTimeout(pushNow, 250); }
 
-  // Observe every localStorage save, including Mom autosave and child quest completion.
   const originalSetItem = Storage.prototype.setItem;
   Storage.prototype.setItem = function (key, value) {
     originalSetItem.apply(this, arguments);
@@ -57,7 +60,6 @@
   };
   window.addEventListener('storage', (e) => { if (e.key === LOCAL_KEY && !applyingRemote) queuePush(); });
 
-  // Realtime via Supabase websocket protocol without adding a build dependency.
   function startRealtime() {
     try {
       const ws = new WebSocket(`${URL.replace('https://','wss://')}/realtime/v1/websocket?apikey=${encodeURIComponent(KEY)}&vsn=1.0.0`);
