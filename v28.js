@@ -1,5 +1,23 @@
 // LifeVerse V2.11 — immersive family adventure + role-specific entry modes.
 (function () {
+  const style = document.createElement('style');
+  style.textContent = `
+    .chapter-head{display:flex;justify-content:space-between;gap:20px;align-items:center;margin:0 0 14px;padding:18px 20px;border-radius:22px;background:linear-gradient(135deg,#fff7dd,#edf5ff);border:1px solid #eadbb8;box-shadow:0 12px 30px rgba(49,78,108,.11)}
+    .chapter-kicker{font-size:9px;font-weight:1000;letter-spacing:1.6px;color:#a5782d}.chapter-head h3{font-family:Georgia,serif;font-size:25px;margin:4px 0;color:#274d7e}.chapter-head p{margin:0;color:#71859d;font-size:11px}.chapter-progress{min-width:105px;text-align:center;padding:12px;border-radius:18px;background:rgba(255,255,255,.7)}.chapter-progress strong{display:block;font-size:28px}.chapter-progress span{font-size:8px;color:#8596aa}
+    .adventure-map{min-height:620px;background:linear-gradient(180deg,#dff5ff 0%,#f8fbef 47%,#e8f0d1 100%);border:3px solid #f3e5bf;box-shadow:inset 0 0 60px rgba(65,126,157,.12),0 16px 38px rgba(46,77,107,.13)}
+    .adventure-map:before,.adventure-map:after{content:'';position:absolute;border-radius:50%;background:rgba(104,192,142,.22);filter:blur(1px)}.adventure-map:before{width:290px;height:160px;left:-40px;bottom:40px}.adventure-map:after{width:250px;height:140px;right:-20px;top:45px}
+    .path-ribbon{position:absolute;left:12%;right:12%;top:49%;height:9px;border-radius:99px;background:linear-gradient(90deg,#69d3b0 0 25%,#65aef2 25% 55%,#9b7cea 55% 77%,#d5c8b3 77%);transform:rotate(-7deg);box-shadow:0 0 0 5px rgba(255,255,255,.5)}
+    .game-stage{width:178px;min-height:145px;padding:16px 13px 12px;border-radius:28px!important;z-index:3;background:rgba(255,251,240,.96);border:3px solid #fff;box-shadow:0 16px 30px rgba(54,86,115,.18)}.game-stage.current{animation:stagePulse 1.9s ease-in-out infinite;border-color:#c6a3ff;background:linear-gradient(160deg,#fffaf0,#f1eaff)}.game-stage.done{border-color:#78d7b5;background:linear-gradient(160deg,#f4fff9,#e9fbf3)}.game-stage.locked{opacity:.6;filter:grayscale(.45)}
+    @keyframes stagePulse{50%{transform:translateY(-4px) scale(1.02);box-shadow:0 22px 40px rgba(126,91,195,.28)}}
+    .stage-badge{position:absolute;top:10px;right:12px;font-size:7px;font-weight:1000;letter-spacing:1px;padding:4px 7px;border-radius:999px;background:#edf2f7;color:#71849c}.current .stage-badge{background:#efe5ff;color:#8157c8}.done .stage-badge{background:#dcf7ec;color:#3b9676}.stage-mark{position:absolute;left:10px;top:9px;width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#fff;box-shadow:0 4px 10px rgba(60,84,110,.12);font-size:12px}.game-stage .modern-icon{width:34px;height:34px;margin:17px auto 4px}.game-stage b{font-size:13px}.game-stage small{display:block;margin-top:3px;line-height:1.3}.game-stage em{display:block;margin-top:8px;font-style:normal;font-size:8px;color:#8a9aac}
+    .quest-summary{display:grid;grid-template-columns:140px 1fr auto;gap:14px;align-items:center;padding:16px 18px;margin-bottom:14px;border-radius:22px;background:linear-gradient(135deg,#fff7da,#f1edff);border:1px solid #ebddbc}.quest-summary>div:first-child span,.quest-summary>div:first-child small{display:block;font-size:8px;color:#8b7a5b}.quest-summary strong{font-size:27px}.quest-summary-bar{height:13px;border-radius:999px;background:rgba(255,255,255,.72);overflow:hidden;box-shadow:inset 0 1px 3px rgba(42,65,89,.12)}.quest-summary-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#65d1ae,#68aef3,#9a7bea)}.quest-summary-reward{font-size:10px;font-weight:900;color:#755f2f}
+    .game-quest-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.game-quest{position:relative;overflow:hidden;padding-top:20px}.game-quest:before{content:'';position:absolute;left:0;top:0;right:0;height:5px;background:linear-gradient(90deg,#65b5f2,#987be9)}.quest-cleared:before{background:#68d0ac}.quest-cleared{background:linear-gradient(160deg,#f5fff9,#fffaf0)}.quest-number{position:absolute;right:14px;top:14px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#eff4fa;color:#66809d;font-size:9px;font-weight:1000}.quest-cleared .quest-number{background:#dff8ee;color:#3d9878}.quest-loot{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.quest-loot span{font-size:8px;font-weight:900;padding:5px 7px;border-radius:999px;background:#f1f5fb;color:#5e7894}
+    body[data-mode="child"] .players{display:none!important}body[data-mode="child"] .tiles{grid-template-columns:repeat(3,1fr)}
+    @media(max-width:900px){.game-quest-grid{grid-template-columns:repeat(2,1fr)}.chapter-head{align-items:flex-start}.quest-summary{grid-template-columns:1fr}.quest-summary-reward{text-align:left}}
+    @media(max-width:600px){.game-quest-grid{grid-template-columns:1fr}.chapter-head{display:block}.chapter-progress{margin-top:12px}.adventure-map{min-height:720px}.game-stage{width:145px;min-height:132px}.quest-summary{display:block}.quest-summary-bar{margin:10px 0}}
+  `;
+  document.head.appendChild(style);
+
   const params = new URLSearchParams(window.location.search);
   const requestedMode = (params.get('mode') || '').toLowerCase();
   const requestedPlayer = params.get('player');
@@ -14,8 +32,6 @@
     state.player = requestedPlayer || 'Rina';
   }
 
-  // Upgrade the old goal blocks into a game-style chapter path.
-  const originalGoalsPage = goalsPage;
   goalsPage = function gameGoalsPage() {
     const p = P();
     const c = completed();
@@ -33,18 +49,14 @@
           const mark = status==='done' ? '✓' : status==='locked' ? '🔒' : '✦';
           const need = Math.max(0, i-c);
           return `<button class="goal-node game-stage g${i+1} ${status}">
-            <span class="stage-badge">${tag}</span>
-            <span class="stage-mark">${mark}</span>
-            <span class="modern-icon">${icon(g[2])}</span>
-            <b>${g[0]}</b><small>${g[1]}</small>
+            <span class="stage-badge">${tag}</span><span class="stage-mark">${mark}</span>
+            <span class="modern-icon">${icon(g[2])}</span><b>${g[0]}</b><small>${g[1]}</small>
             ${status==='locked'?`<em>${need} more quest${need===1?'':'s'} to unlock</em>`:'<em>Tap into your next adventure</em>'}
           </button>`;
         }).join('')}
       </div>`;
   };
 
-  // Give the quest hall a clearer game loop and reward hierarchy.
-  const originalTasksPage = tasksPage;
   tasksPage = function gameTasksPage() {
     const p = P();
     const c = completed();
@@ -57,10 +69,8 @@
       <div class="quest-grid game-quest-grid">${p.tasks.map((t,i)=>{
         const done=state.done[k(i)];
         return `<div class="quest-card game-quest ${done?'quest-cleared':''}">
-          <div class="quest-number">${done?'✓':String(i+1).padStart(2,'0')}</div>
-          <div class="icon modern-icon">${icon(t[4])}</div>
-          <h3>${t[0]}</h3><p>${t[1]}</p>
-          <div class="quest-loot"><span>+${t[2]} XP</span><span>+${t[3]} Coins</span></div>
+          <div class="quest-number">${done?'✓':String(i+1).padStart(2,'0')}</div><div class="icon modern-icon">${icon(t[4])}</div>
+          <h3>${t[0]}</h3><p>${t[1]}</p><div class="quest-loot"><span>+${t[2]} XP</span><span>+${t[3]} Coins</span></div>
           <button class="action" onclick="completeTask(${i})">${done?'Quest Cleared ✓':'Complete Quest'}</button>
         </div>`;
       }).join('')}</div>`;
@@ -70,7 +80,6 @@
   render = function renderAnimeWorld() {
     if (isChildMode && state.page === 'family') state.page = 'home';
     if (isChildMode && state.player !== requestedPlayer) state.player = requestedPlayer;
-
     originalRender();
     document.body.dataset.player = state.player;
     document.body.dataset.mode = isChildMode ? 'child' : (isParentMode ? 'parent' : 'family');
