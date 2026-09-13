@@ -43,6 +43,7 @@ const sandbox = {
   burst() {},
   combo() {},
   toast() {}
+  ,familyPage() { return '<div>Family</div>'; }
 };
 
 vm.runInNewContext(fs.readFileSync('persistence.js', 'utf8'), sandbox);
