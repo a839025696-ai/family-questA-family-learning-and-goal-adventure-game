@@ -1,4 +1,4 @@
-// LifeVerse V2.12 — immersive family adventure + role-specific entry modes + categorized tasks/subtasks.
+// LifeVerse V2.13 — focused child quest flow + live local sync.
 (function () {
   const style = document.createElement('style');
   style.textContent = `
@@ -14,11 +14,14 @@
     .game-quest-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.game-quest{position:relative;overflow:hidden;padding-top:20px}.game-quest:before{content:'';position:absolute;left:0;top:0;right:0;height:5px;background:linear-gradient(90deg,#65b5f2,#987be9)}.quest-cleared:before{background:#68d0ac}.quest-cleared{background:linear-gradient(160deg,#f5fff9,#fffaf0)}.quest-number{position:absolute;right:14px;top:14px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#eff4fa;color:#66809d;font-size:9px;font-weight:1000}.quest-cleared .quest-number{background:#dff8ee;color:#3d9878}.quest-loot{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.quest-loot span{font-size:8px;font-weight:900;padding:5px 7px;border-radius:999px;background:#f1f5fb;color:#5e7894}
     .cat-chip{display:inline-flex;align-items:center;gap:4px;margin:0 0 7px;padding:5px 8px;border-radius:999px;font-size:8px;font-weight:1000;letter-spacing:.4px}.cat-life{background:#e6f8ee;color:#348765}.cat-study{background:#e8f2ff;color:#3974b6}.cat-interest{background:#f4eaff;color:#8058b4}
     .subtask-list{display:grid;gap:6px;margin:10px 0 12px;padding:10px;border-radius:14px;background:#f7f9fc}.subtask{display:flex;align-items:center;gap:8px;border:0;background:transparent;text-align:left;color:#516b86;cursor:pointer;padding:3px}.subtask i{width:20px;height:20px;display:grid;place-items:center;border-radius:7px;border:1px solid #cfdaea;background:#fff;font-style:normal;font-size:10px}.subtask.done{color:#6c9b83;text-decoration:line-through}.subtask.done i{background:#68cfaa;color:#fff;border-color:#68cfaa}.subtask-note{display:block;font-size:8px;color:#8da0b5;margin-top:4px}
+    .current-focus{padding:4px 0 2px}.current-focus-head{display:flex;justify-content:space-between;gap:10px;align-items:start}.current-focus h4{margin:4px 0 3px;font-size:18px}.current-focus p{margin:0;color:#8295aa;font-size:10px}.current-focus .subtask-list{margin:12px 0}.current-focus .focus-reward{font-size:9px;color:#b77b14;font-weight:900}.focus-time{font-size:9px;padding:5px 8px;border-radius:999px;background:#fff1d6;color:#956715;font-weight:900}.all-clear{padding:18px;border-radius:18px;background:linear-gradient(135deg,#e8fff5,#f6f0ff);text-align:center}.all-clear strong{display:block;font-size:18px;color:#3d8067}.all-clear small{color:#8194a9}
     .mom-v212{margin-top:18px;padding:22px;border-radius:26px;background:linear-gradient(145deg,#fffaf0,#f3efff);border:1px solid #e2d9ef;box-shadow:0 16px 42px rgba(77,122,174,.13)}.mom-v212-head{display:flex;justify-content:space-between;gap:14px;align-items:center}.mom-v212-head h2{margin:4px 0;font-size:23px}.mom-v212-head p{margin:0;color:#8297b2;font-size:10px}.mom-v212-head select{padding:10px 12px;border:1px solid #d7e1ef;border-radius:12px;background:#fff;font-weight:800}.task-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0}.task-tabs button{border:1px solid #dbe4ef;background:#fff;border-radius:999px;padding:8px 11px;font-size:9px;font-weight:900;cursor:pointer}.task-tabs button.active{background:#274d7e;color:#fff;border-color:#274d7e}.mom-task-v212{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:12px 0;border-top:1px solid #e9edf4}.mom-task-v212:first-child{border-top:0}.mom-task-v212 b,.mom-task-v212 small{display:block}.mom-task-v212 small{margin-top:4px;color:#899bb0;font-size:8px}.mom-task-v212 button{border:0;border-radius:10px;padding:7px 9px;background:#eaf4ff;color:#497ab4;font-size:9px;font-weight:900;cursor:pointer}.mom-task-v212 button.danger{background:#fff0f2;color:#cc5f77}.mom-form-v212{display:grid;grid-template-columns:1.2fr 1.6fr 1.6fr .55fr .55fr auto;gap:9px;align-items:end;margin-top:16px;padding-top:16px;border-top:1px solid #e0e6ef}.mom-form-v212 label{font-size:9px;font-weight:900;color:#687f99}.mom-form-v212 input,.mom-form-v212 select,.mom-form-v212 textarea{width:100%;margin-top:5px;padding:10px;border:1px solid #d8e2ef;border-radius:11px;background:#fff;color:#284b6e}.mom-form-v212 textarea{min-height:78px;resize:vertical}.mom-form-v212 button{border:0;border-radius:12px;padding:12px 14px;background:linear-gradient(135deg,#5aa7ff,#8d7cf0);color:#fff;font-size:10px;font-weight:1000;cursor:pointer}
-    body[data-mode="child"] .players{display:none!important}body[data-mode="child"] .tiles{grid-template-columns:repeat(3,1fr)}
+    /* V2.13 visual cleanup */
+    .nav-ico{color:#fff!important;background:linear-gradient(135deg,#6da9ff,#8c7cf0)!important;box-shadow:0 5px 12px rgba(67,104,165,.18)}.nav button:nth-child(2) .nav-ico{background:linear-gradient(135deg,#60cba7,#52a9d9)!important}.nav button:nth-child(3) .nav-ico{background:linear-gradient(135deg,#f4b84d,#ee7f67)!important}.nav button:nth-child(4) .nav-ico{background:linear-gradient(135deg,#a67be8,#6f8fed)!important}.nav button:nth-child(5) .nav-ico{background:linear-gradient(135deg,#f08eb0,#bc75e9)!important}.nav button:nth-child(6) .nav-ico{background:linear-gradient(135deg,#75c59a,#5b9edb)!important}.nav svg{stroke:#fff!important}.world{min-height:430px!important}.hero{grid-template-columns:minmax(0,1fr) 286px!important}.world-copy h3{font-size:39px!important}.hero-avatar .avatar{width:60px!important;height:60px!important}
+    body[data-mode="child"] .players{display:none!important}body[data-mode="child"] .tiles{grid-template-columns:repeat(3,1fr)}body[data-mode="child"] .world{min-height:455px!important}
     @media(max-width:1000px){.mom-form-v212{grid-template-columns:1fr 1fr}.mom-form-v212 label:nth-child(2),.mom-form-v212 label:nth-child(3),.mom-form-v212 button{grid-column:1/-1}}
     @media(max-width:900px){.game-quest-grid{grid-template-columns:repeat(2,1fr)}.chapter-head{align-items:flex-start}.quest-summary{grid-template-columns:1fr}.quest-summary-reward{text-align:left}}
-    @media(max-width:600px){.game-quest-grid{grid-template-columns:1fr}.chapter-head{display:block}.chapter-progress{margin-top:12px}.adventure-map{min-height:720px}.game-stage{width:145px;min-height:132px}.quest-summary{display:block}.quest-summary-bar{margin:10px 0}.mom-v212-head{display:block}.mom-v212-head select{width:100%;margin-top:10px}.mom-form-v212{grid-template-columns:1fr}.mom-form-v212>*{grid-column:1!important}}
+    @media(max-width:600px){.game-quest-grid{grid-template-columns:1fr}.chapter-head{display:block}.chapter-progress{margin-top:12px}.adventure-map{min-height:720px}.game-stage{width:145px;min-height:132px}.quest-summary{display:block}.quest-summary-bar{margin:10px 0}.mom-v212-head{display:block}.mom-v212-head select{width:100%;margin-top:10px}.mom-form-v212{grid-template-columns:1fr}.mom-form-v212>*{grid-column:1!important}.world{min-height:390px!important}.world-copy h3{font-size:31px!important}}
   `;
   document.head.appendChild(style);
 
@@ -28,7 +31,8 @@
   const allowedChildren = ['Alex', 'Leo'];
   const isChildMode = requestedMode === 'child' && allowedChildren.includes(requestedPlayer);
   const isParentMode = requestedMode === 'parent';
-  const CATS = {life:['日常生活','🏠'],study:['学习任务','📚'],interest:['兴趣活动','🎨']};
+  const CATS = {life:['日常生活','☀️'],study:['学习任务','📘'],interest:['兴趣活动','✨']};
+  const syncChannel=('BroadcastChannel' in window)?new BroadcastChannel('lifeverse-sync'):null;
 
   if (isChildMode) {
     state.player = requestedPlayer;
@@ -51,6 +55,7 @@
   function subKey(task,index){return `${state.player}-${task[5]||task[0]}-sub-${index}`;}
   function allSubsDone(task){const subs=subtasks(task);return !subs.length||subs.every((_,i)=>!!state.subDone[subKey(task,i)]);}
   function catChip(task){const c=taskCategory(task),meta=CATS[c];return `<span class="cat-chip cat-${c}">${meta[1]} ${meta[0]}</span>`;}
+  function reminderMeta(task){return (state.reminderMeta&&state.reminderMeta[task[5]])||{};}
 
   DATA && Object.keys(DATA).forEach(name=>{
     (DATA[name].tasks||[]).forEach(t=>{if(!t[6]) t[6]=taskCategory(t);if(!Array.isArray(t[7])) t[7]=[];});
@@ -68,7 +73,7 @@
 
   window.toggleSubtask = function toggleSubtask(taskIndex, subIndex){
     const task=P().tasks[taskIndex]; if(!task) return;
-    const key=subKey(task,subIndex); state.subDone[key]=!state.subDone[key]; save(); render();
+    const key=subKey(task,subIndex); state.subDone[key]=!state.subDone[key]; save(); syncChannel?.postMessage({type:'state-changed'}); render();
   };
 
   goalsPage = function gameGoalsPage() {
@@ -89,8 +94,8 @@
   tasksPage = function gameTasksPage() {
     const p=P(),c=completed();
     return panelTitle('Quest Hall','任务大厅')+`<div class="quest-summary"><div><span>TODAY'S RUN</span><strong>${c}/${p.tasks.length}</strong><small>quests complete</small></div><div class="quest-summary-bar"><i style="width:${p.tasks.length?Math.min(100,c/p.tasks.length*100):0}%"></i></div><div class="quest-summary-reward">🎁 ${c>=3?'Mystery Box ready':'Complete 3 quests for a Mystery Box'}</div></div><div class="quest-grid game-quest-grid">${p.tasks.map((t,i)=>{
-      const done=state.done[k(i)], subs=subtasks(t), subsDone=subs.filter((_,si)=>state.subDone[subKey(t,si)]).length;
-      return `<div class="quest-card game-quest ${done?'quest-cleared':''}"><div class="quest-number">${done?'✓':String(i+1).padStart(2,'0')}</div>${catChip(t)}<div class="icon modern-icon">${icon(t[4])}</div><h3>${safeText(t[0])}</h3><p>${safeText(t[1])}</p>${subs.length?`<div class="subtask-list">${subs.map((s,si)=>{const sd=!!state.subDone[subKey(t,si)];return `<button class="subtask ${sd?'done':''}" onclick="toggleSubtask(${i},${si})"><i>${sd?'✓':''}</i><span>${safeText(s)}</span></button>`}).join('')}<span class="subtask-note">${subsDone}/${subs.length} 子任务完成</span></div>`:''}<div class="quest-loot"><span>+${t[2]} XP</span><span>+${t[3]} Coins</span></div><button class="action" onclick="completeTask(${i})">${done?'Quest Cleared ✓':subs.length&&!allSubsDone(t)?'Finish Subtasks':'Complete Quest'}</button></div>`;
+      const done=state.done[k(i)], subs=subtasks(t), subsDone=subs.filter((_,si)=>state.subDone[subKey(t,si)]).length,m=reminderMeta(t);
+      return `<div class="quest-card game-quest ${done?'quest-cleared':''}"><div class="quest-number">${done?'✓':String(i+1).padStart(2,'0')}</div>${catChip(t)}<div class="icon modern-icon">${icon(t[4])}</div><h3>${safeText(t[0])}</h3><p>${safeText(t[1])}</p>${m.time?`<span class="focus-time">⏰ ${safeText(m.time)}</span>`:''}${subs.length?`<div class="subtask-list">${subs.map((s,si)=>{const sd=!!state.subDone[subKey(t,si)];return `<button class="subtask ${sd?'done':''}" onclick="toggleSubtask(${i},${si})"><i>${sd?'✓':''}</i><span>${safeText(typeof s==='string'?s:(s.text||''))}</span></button>`}).join('')}<span class="subtask-note">${subsDone}/${subs.length} 子任务完成</span></div>`:''}<div class="quest-loot"><span>+${t[2]} XP</span><span>+${t[3]} Coins</span></div><button class="action" onclick="completeTask(${i})">${done?'Quest Cleared ✓':subs.length&&!allSubsDone(t)?'Finish Subtasks':'Complete Quest'}</button></div>`;
     }).join('')}</div>`;
   };
 
@@ -125,6 +130,14 @@
   };
   window.removeAdvancedTask=function(index){const name=adminTargetName(),t=DATA[name].tasks[index];if(!t||!confirm(`删除 ${t[0]}？`))return;delete state.done[`${name}-${t[5]}`];subtasks(t).forEach((_,si)=>delete state.subDone[`${name}-${t[5]}-sub-${si}`]);DATA[name].tasks.splice(index,1);save();render();toast('Quest removed','任务已删除');};
 
+  function renderFocusedQuest(){
+    if(!isChildMode||state.page!=='home')return;
+    const card=document.querySelector('.section-grid .card:first-child');if(!card)return;
+    const p=P();let idx=p.tasks.findIndex((t,i)=>!state.done[k(i)]);if(idx<0){card.innerHTML='<div class="card-head"><h3>Today’s Quest <span class="zh">当前任务</span></h3></div><div class="all-clear"><strong>All quests cleared! ✓</strong><small>今天的任务全部完成了</small></div>';return}
+    const t=p.tasks[idx],subs=subtasks(t),m=reminderMeta(t),subsDone=subs.filter((_,si)=>state.subDone[subKey(t,si)]).length;
+    card.innerHTML=`<div class="card-head"><h3>Current Quest <span class="zh">当前任务</span></h3><button class="linkbtn" onclick="go('tasks')">全部任务</button></div><div class="current-focus"><div class="current-focus-head"><div>${catChip(t)}<h4>${safeText(t[0])}</h4><p>${safeText(t[1]||'')}</p></div>${m.time?`<span class="focus-time">⏰ ${safeText(m.time)}</span>`:''}</div>${subs.length?`<div class="subtask-list">${subs.map((s,si)=>{const sd=!!state.subDone[subKey(t,si)];return `<button class="subtask ${sd?'done':''}" onclick="toggleSubtask(${idx},${si})"><i>${sd?'✓':''}</i><span>${safeText(typeof s==='string'?s:(s.text||''))}</span></button>`}).join('')}<span class="subtask-note">${subsDone}/${subs.length} 子任务完成 · 未全部完成前会一直停留在这里</span></div>`:''}<div class="focus-reward">+${t[2]} XP · +${t[3]} Coins</div><button class="action" style="margin-top:10px" onclick="completeTask(${idx})">${subs.length&&!allSubsDone(t)?'Finish Subtasks':'Complete Quest'}</button></div>`;
+  }
+
   const originalRender = render;
   render = function renderAnimeWorld() {
     if (isChildMode && state.page === 'family') state.page = 'home';
@@ -142,9 +155,12 @@
       document.querySelectorAll('.mom-admin,.mom-v212').forEach(el=>el.style.display='none');
       document.querySelectorAll('.tile').forEach(tile=>{const text=(tile.textContent||'').toLowerCase();if(text.includes('family')||text.includes('家庭'))tile.style.display='none';});
       const greeting=document.getElementById('greeting');if(greeting)greeting.textContent=`Welcome back, ${requestedPlayer}!`;
+      renderFocusedQuest();
     }
   };
 
+  window.addEventListener('storage',e=>{if(e.key==='lifeverseLightV1'&&e.newValue){location.reload();}});
+  if(syncChannel)syncChannel.onmessage=()=>location.reload();
   save();
   render();
 })();
