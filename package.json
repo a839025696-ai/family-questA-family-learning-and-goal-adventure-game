@@ -1,0 +1,11 @@
+{
+  "name": "lifeverse-family-quest",
+  "private": true,
+  "scripts": {
+    "dev": "node serve.mjs",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "vite": "^7.1.5"
+  }
+}
