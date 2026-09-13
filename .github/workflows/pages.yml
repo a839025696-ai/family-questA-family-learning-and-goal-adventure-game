@@ -37,12 +37,19 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import re
-          page = Path('_site/index.html')
-          html = page.read_text(encoding='utf-8')
-          tag = '<script src="persistence.js"></script>'
-          if tag not in html:
-              html = html.replace('</body>', f'{tag}\n</body>')
-          page.write_text(html, encoding='utf-8')
+
+          def inject_script(path, script_name):
+              page = Path(path)
+              html = page.read_text(encoding='utf-8')
+              tag = f'<script src="{script_name}"></script>'
+              if tag not in html:
+                  html = html.replace('</body>', f'{tag}\n</body>')
+              page.write_text(html, encoding='utf-8')
+              return html
+
+          html = inject_script('_site/index.html', 'cloud-sync.js')
+          inject_script('_site/mom.html', 'cloud-sync.js')
+
           scripts = re.findall(r'<script(?:[^>]*)>(.*?)</script>', html, re.S)
           for index, script in enumerate(scripts):
               Path(f'_site/inline-{index}.js').write_text(script, encoding='utf-8')
@@ -52,6 +59,7 @@ jobs:
         run: |
           node --check _site/inline-0.js
           node --check _site/persistence.js
+          node --check _site/cloud-sync.js
 
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
