@@ -14,17 +14,67 @@
   function readLocal() {
     try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}'); } catch (_) { return {}; }
   }
+
+  // The main UI keeps XP / coins / level in DATA while save() serializes state.
+  // Mirror those mutable values into state.progress so refreshes and cloud sync
+  // never reset a child's earned progress. Existing saves without progress remain valid.
+  function canReadGameData() {
+    return typeof DATA !== 'undefined' && DATA && typeof DATA === 'object';
+  }
+  function progressSnapshot() {
+    if (!canReadGameData()) return null;
+    const out = {};
+    Object.keys(DATA).forEach((name) => {
+      const p = DATA[name];
+      if (!p) return;
+      out[name] = {
+        level: Number(p.level) || 0,
+        xp: Number(p.xp) || 0,
+        next: Number(p.next) || 100,
+        coins: Number(p.coins) || 0,
+        streak: Number(p.streak) || 0
+      };
+    });
+    return out;
+  }
+  function hydrateProgress(payload) {
+    if (!canReadGameData() || !payload || !payload.progress) return;
+    Object.entries(payload.progress).forEach(([name, saved]) => {
+      const p = DATA[name];
+      if (!p || !saved) return;
+      ['level', 'xp', 'next', 'coins', 'streak'].forEach((field) => {
+        if (Number.isFinite(Number(saved[field]))) p[field] = Number(saved[field]);
+      });
+    });
+  }
+  function enrichProgress(value) {
+    if (!canReadGameData()) return value;
+    try {
+      const payload = JSON.parse(value || '{}');
+      payload.progress = progressSnapshot();
+      return JSON.stringify(payload);
+    } catch (_) {
+      return value;
+    }
+  }
+
+  // Rehydrate before the first render-side interaction. This is deliberately
+  // tolerant of the older schema, which had no progress object.
+  hydrateProgress(readLocal());
+
   function applyRemote(payload) {
     if (!payload || typeof payload !== 'object') return;
     const text = JSON.stringify(payload);
     const current = localStorage.getItem(LOCAL_KEY) || '';
     if (text === current || text === lastPayload) {
       lastPayload = text;
+      hydrateProgress(payload);
       return;
     }
     applyingRemote = true;
     lastPayload = text;
-    localStorage.setItem(LOCAL_KEY, text);
+    originalSetItem.call(localStorage, LOCAL_KEY, text);
+    hydrateProgress(payload);
     window.dispatchEvent(new CustomEvent('lifeverse-cloud-update', { detail: payload }));
     setTimeout(() => { applyingRemote = false; location.reload(); }, 80);
   }
@@ -39,7 +89,9 @@
   }
   async function pushNow() {
     if (applyingRemote) return;
-    const payload = readLocal();
+    let payload = readLocal();
+    const progress = progressSnapshot();
+    if (progress) payload.progress = progress;
     const text = JSON.stringify(payload);
     if (!text || text === lastPayload) return;
     try {
@@ -55,7 +107,9 @@
 
   const originalSetItem = Storage.prototype.setItem;
   Storage.prototype.setItem = function (key, value) {
-    originalSetItem.apply(this, arguments);
+    let nextValue = value;
+    if (this === localStorage && key === LOCAL_KEY && !applyingRemote) nextValue = enrichProgress(value);
+    originalSetItem.call(this, key, nextValue);
     if (this === localStorage && key === LOCAL_KEY && !applyingRemote) queuePush();
   };
   window.addEventListener('storage', (e) => { if (e.key === LOCAL_KEY && !applyingRemote) queuePush(); });
@@ -76,6 +130,6 @@
     } catch (_) { setTimeout(startRealtime, 5000); }
   }
 
-  window.LifeVerseCloud = { pull, push: pushNow };
+  window.LifeVerseCloud = { pull, push: pushNow, progressSnapshot };
   pull().then(startRealtime);
 })();
