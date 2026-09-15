@@ -7,7 +7,9 @@
   let applyingRemote=false, saveTimer=null, pollTimer=null;
   let lastCloudText='';
   const originalSetItem=Storage.prototype.setItem;
-  function headers(extra){return Object.assign({apikey:KEY,Authorization:`Bearer ${KEY}`,'Content-Type':'application/json'},extra||{});}
+  // Supabase publishable keys are API keys, not JWTs. Sending one as a Bearer JWT
+  // can make PostgREST reject the request. Use the apikey header only.
+  function headers(extra){return Object.assign({apikey:KEY,'Content-Type':'application/json'},extra||{});}
   function localText(){return localStorage.getItem(LOCAL_KEY)||'';}
   function readLocal(){try{return JSON.parse(localText()||'{}')}catch(_){return {}}}
   function normalize(v){try{return JSON.stringify(typeof v==='string'?JSON.parse(v):v)}catch(_){return ''}}
@@ -23,7 +25,7 @@
   async function pull(){
     try{
       const r=await fetch(`${URL}/rest/v1/lifeverse_family_state?family_id=eq.${encodeURIComponent(FAMILY_ID)}&select=payload,updated_at`,{headers:headers(),cache:'no-store'});
-      if(!r.ok)throw new Error(`pull ${r.status}`);const rows=await r.json();
+      if(!r.ok)throw new Error(`pull ${r.status}: ${await r.text()}`);const rows=await r.json();
       if(rows[0]&&rows[0].payload)applyRemote(rows[0].payload);else await pushNow(true);
     }catch(e){console.warn('LifeVerse cloud pull unavailable',e);}
   }
@@ -31,7 +33,7 @@
     if(applyingRemote)return;const payload=readLocal(),text=normalize(payload);if(!text||(!force&&text===lastCloudText))return;
     try{
       const r=await fetch(`${URL}/rest/v1/lifeverse_family_state?on_conflict=family_id`,{method:'POST',headers:headers({Prefer:'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify({family_id:FAMILY_ID,payload,updated_at:new Date().toISOString()})});
-      if(!r.ok)throw new Error(`push ${r.status}`);lastCloudText=text;
+      if(!r.ok)throw new Error(`push ${r.status}: ${await r.text()}`);lastCloudText=text;
     }catch(e){console.warn('LifeVerse cloud push unavailable',e);}
   }
   function queuePush(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>pushNow(false),180);}
