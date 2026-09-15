@@ -56,10 +56,37 @@ jobs:
           PY
 
       - name: Check JavaScript syntax
+        shell: bash
         run: |
-          node --check _site/inline-0.js
-          node --check _site/persistence.js
-          node --check _site/cloud-sync.js
+          set -euo pipefail
+          shopt -s nullglob
+          files=(
+            _site/inline-*.js
+            _site/app.js
+            _site/persistence.js
+            _site/cloud-sync.js
+            _site/daily-rules.js
+          )
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No JavaScript files found to validate."
+            exit 1
+          fi
+          for file in "${files[@]}"; do
+            if [ -f "$file" ]; then
+              echo "Checking $file"
+              node --check "$file"
+            fi
+          done
+
+      - name: Verify publishable entry points
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s _site/index.html
+          test -s _site/alex.html
+          test -s _site/leo.html
+          test -s _site/mom.html
+          grep -q '<meta name="viewport"' _site/index.html
 
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
