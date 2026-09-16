@@ -48,6 +48,7 @@ jobs:
               return html
 
           html = inject_script('_site/index.html', 'cloud-sync.js')
+          html = inject_script('_site/index.html', 'world-zones.js')
           inject_script('_site/mom.html', 'cloud-sync.js')
 
           scripts = re.findall(r'<script(?:[^>]*)>(.*?)</script>', html, re.S)
@@ -66,6 +67,7 @@ jobs:
             _site/persistence.js
             _site/cloud-sync.js
             _site/daily-rules.js
+            _site/world-zones.js
           )
           if [ ${#files[@]} -eq 0 ]; then
             echo "No JavaScript files found to validate."
@@ -86,7 +88,9 @@ jobs:
           test -s _site/alex.html
           test -s _site/leo.html
           test -s _site/mom.html
+          test -s _site/world-zones.js
           grep -q '<meta name="viewport"' _site/index.html
+          grep -q 'world-zones.js' _site/index.html
 
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
