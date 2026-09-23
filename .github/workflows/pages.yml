@@ -53,6 +53,7 @@ jobs:
           html = inject_script('_site/index.html', 'inventory-system.js')
           html = inject_script('_site/index.html', 'anime-world-visuals.js')
           html = inject_script('_site/index.html', 'anime-world-atmosphere.js')
+          html = inject_script('_site/index.html', 'anime-world-daycycle.js')
           inject_script('_site/mom.html', 'cloud-sync.js')
 
           scripts = re.findall(r'<script(?:[^>]*)>(.*?)</script>', html, re.S)
@@ -76,6 +77,7 @@ jobs:
             _site/inventory-system.js
             _site/anime-world-visuals.js
             _site/anime-world-atmosphere.js
+            _site/anime-world-daycycle.js
           )
           if [ ${#files[@]} -eq 0 ]; then
             echo "No JavaScript files found to validate."
@@ -101,12 +103,14 @@ jobs:
           test -s _site/inventory-system.js
           test -s _site/anime-world-visuals.js
           test -s _site/anime-world-atmosphere.js
+          test -s _site/anime-world-daycycle.js
           grep -q '<meta name="viewport"' _site/index.html
           grep -q 'world-zones.js' _site/index.html
           grep -q 'skill-system.js' _site/index.html
           grep -q 'inventory-system.js' _site/index.html
           grep -q 'anime-world-visuals.js' _site/index.html
           grep -q 'anime-world-atmosphere.js' _site/index.html
+          grep -q 'anime-world-daycycle.js' _site/index.html
 
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
