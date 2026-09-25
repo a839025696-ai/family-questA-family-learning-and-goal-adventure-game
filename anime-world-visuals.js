@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const STYLE_ID = 'lifeverse-anime-world-v5';
+  const STYLE_ID = 'lifeverse-anime-world-v6';
   if (document.getElementById(STYLE_ID)) return;
 
   const style = document.createElement('style');
@@ -20,6 +20,11 @@
     .world .scene{z-index:2;filter:saturate(1.08) contrast(1.025)}
     .world .scene:after{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,rgba(255,255,255,.9) 0 1.2px,transparent 1.8px),radial-gradient(circle,rgba(255,236,148,.72) 0 1px,transparent 1.7px);background-size:73px 67px,101px 89px;background-position:12px 18px,43px 27px;opacity:.48;animation:lvSparkle 7s linear infinite}
     .hudcard{background:linear-gradient(160deg,rgba(255,255,255,.97),rgba(246,250,255,.93));box-shadow:0 18px 45px rgba(64,113,169,.16)}
+    .hero-avatar:focus-visible,.zone-node:focus-visible,.map-node:focus-visible,.goal-node:focus-visible{outline:3px solid #6f5bd3!important;outline-offset:5px;box-shadow:0 0 0 7px rgba(255,255,255,.88),0 0 0 10px rgba(111,91,211,.25)!important}
+    .xpbar,.xp-fill,.progress-fill,[class*="xp-bar"],[class*="xp-fill"]{position:relative;overflow:hidden}
+    .xp-fill:after,.progress-fill:after,[class*="xp-fill"]:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 28%,rgba(255,255,255,.62) 48%,transparent 68%);transform:translateX(-125%);animation:lvXpShine 3.8s ease-in-out infinite;pointer-events:none}
+    button,.zone-node,.map-node,.goal-node,.hero-avatar{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+    @media(hover:none){button:active,.zone-node:not(:disabled):active,.map-node:active,.goal-node:active{transform:scale(.97);filter:brightness(.98)}}
     .map-mini,.goalmap{background:linear-gradient(180deg,#d8f2ff 0%,#f6fbff 43%,#dff4e5 100%)}
     .map-node.current,.goal-node.current{animation:lvQuestPulse 2.2s ease-in-out infinite}
 
@@ -36,6 +41,7 @@
     @keyframes lvFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
     @keyframes lvSparkle{0%{transform:translate3d(0,0,0)}50%{opacity:.72}100%{transform:translate3d(18px,-12px,0)}}
     @keyframes lvQuestPulse{0%,100%{box-shadow:0 7px 18px rgba(69,126,171,.18),0 0 0 0 rgba(153,119,239,.26)}50%{box-shadow:0 9px 22px rgba(69,126,171,.22),0 0 0 8px rgba(153,119,239,0)}}
+    @keyframes lvXpShine{0%,62%{transform:translateX(-125%)}82%,100%{transform:translateX(125%)}}
     @keyframes lvZoneAura{0%,100%{box-shadow:0 14px 30px rgba(117,86,190,.24),0 0 0 0 rgba(169,140,240,.30)}50%{box-shadow:0 20px 42px rgba(117,86,190,.31),0 0 0 12px rgba(169,140,240,0)}}
     @media(max-width:760px){
       .world{min-height:390px;border-radius:24px}.world:before{height:34%;bottom:-10%}.world-copy{left:20px;top:20px;max-width:76%}.world-copy h3{font-size:30px}.hero-avatar{left:18px;bottom:24px}.hero-avatar:hover{transform:none}.hero-avatar:after{font-size:8px;padding:4px 7px}.float-label{font-size:9px;padding:7px 10px;backdrop-filter:none;background:rgba(255,255,255,.91)}.lab-label{right:10px;top:112px}.rowing-label{right:12px;bottom:105px}
@@ -47,5 +53,5 @@
   document.head.appendChild(style);
 
   // Decorative only: real HTML controls and JavaScript state remain authoritative.
-  document.documentElement.dataset.animeVisuals = 'rpg-v5';
+  document.documentElement.dataset.animeVisuals = 'rpg-v6';
 })();
